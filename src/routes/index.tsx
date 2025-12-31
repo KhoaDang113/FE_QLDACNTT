@@ -256,7 +256,6 @@ const routerBroswer = createBrowserRouter(router, {
   },
 });
 
-// Disable browser's default scroll restoration
 if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual';
 }

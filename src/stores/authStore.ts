@@ -18,7 +18,6 @@ export const useAuthStore = create<AuthState>()(
       setUser: (user) => {
         const oldUser = get().user;
 
-        // Chỉ xoá cart khi chuyển sang user khác hoàn toàn
         const isDifferentUser = oldUser?.id && oldUser.id !== user?.id;
         if (isDifferentUser && typeof window !== "undefined") {
           localStorage.removeItem(`cart_${oldUser.id}`);
@@ -39,7 +38,6 @@ export const useAuthStore = create<AuthState>()(
           console.log("Logout API error", e);
         }
 
-        // Clear cart của user hiện tại khi logout
         if (currentUser?.id && typeof window !== "undefined") {
           localStorage.removeItem(`cart_${currentUser.id}`);
         }
@@ -88,7 +86,6 @@ export const useAuthStore = create<AuthState>()(
                 ).default;
                 staffService.setOnline().catch(() => { });
               } catch {
-                // ignore
               }
             }
           } else {
@@ -104,7 +101,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "auth-storage", // key trong localStorage
+      name: "auth-storage",
     }
   )
 );

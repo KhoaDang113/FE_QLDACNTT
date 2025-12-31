@@ -9,6 +9,7 @@ import { getProductId, getProductImage } from "@/lib/constants";
 import type { Product } from "@/types";
 import type { Banner } from "@/types/banner.type";
 
+// Fix giao diện trang chủ
 interface Category {
   _id?: string;
   id?: string;
@@ -22,19 +23,16 @@ export default function HomePage() {
   const [mainBanners, setMainBanners] = useState<Banner[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch categories và main banners
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        // Lấy danh sách categories
         const categoriesData = await categoryService.getRootCategories();
         setCategories(categoriesData);
 
-        // Lấy main banners (không có category - lấy tất cả banners active)
         try {
-          const banners = await bannerService.getBanners(); // Không truyền categorySlug để lấy tất cả
+          const banners = await bannerService.getBanners();
           setMainBanners(banners);
         } catch (error) {
           console.error("Error fetching main banners:", error);
