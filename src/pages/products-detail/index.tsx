@@ -12,8 +12,8 @@ import ProductRatings from "@/components/products/ProductRatings";
 import { productService, bannerService } from "@/api";
 import { PRODUCT_PLACEHOLDER_IMAGE, getProductId, getProductImage } from "@/lib/constants";
 import { useCart } from "@/components/cart/CartContext";
-import SuggestedDishes from "@/components/products/SuggestedDishes";
 
+// Trang giao diện chi tiết sản phẩm
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
@@ -527,9 +527,6 @@ export default function ProductDetail() {
             </table>
           </div>
         </div>
-
-        {/* Suggested Dishes - Món ăn gợi ý */}
-        {product && <SuggestedDishes productName={product.name} />}
 
         {/* Product Ratings (với form đánh giá) */}
         <div className="mt-4">

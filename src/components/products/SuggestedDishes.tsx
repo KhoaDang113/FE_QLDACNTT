@@ -5,11 +5,6 @@ import type {
   Ingredient,
 } from "@/types/menu.type";
 import type { Product } from "@/types";
-import {
-  getSuggestedDishesForProduct,
-  getIngredientsForDish,
-  getSpicesForDish,
-} from "@/lib/geminiService";
 import { useCart } from "@/components/cart/CartContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -54,8 +49,8 @@ export default function SuggestedDishes({ productName }: SuggestedDishesProps) {
 
       setIsLoading(true);
       try {
-        const dishes = await getSuggestedDishesForProduct(productName);
-        setSuggestedDishes(dishes);
+        // const dishes = await getSuggestedDishesForProduct(productName);
+        // setSuggestedDishes(dishes);
       } catch (error) {
         console.error("Error loading suggested dishes:", error);
         setSuggestedDishes([]);
@@ -79,15 +74,15 @@ export default function SuggestedDishes({ productName }: SuggestedDishesProps) {
 
     try {
       // Fetch ingredients and spices in parallel
-      // Truyền productName (sản phẩm gốc) để đảm bảo nó được ưu tiên trong danh sách nguyên liệu
-      const [ingredientsList, spicesList] = await Promise.all([
-        getIngredientsForDish(combo.name, productName),
-        getSpicesForDish(combo.name),
-      ]);
+      // // Truyền productName (sản phẩm gốc) để đảm bảo nó được ưu tiên trong danh sách nguyên liệu
+      // const [ingredientsList, spicesList] = await Promise.all([
+      //   // getIngredientsForDish(combo.name, productName),
+      //   // getSpicesForDish(combo.name),
+      // ]);
 
-      setIngredients(ingredientsList);
-      setDishSpices(spicesList);
-      setSelectedCombo({ ...combo, ingredients: ingredientsList });
+      // setIngredients(ingredientsList);
+      // setDishSpices(spicesList);
+      // setSelectedCombo({ ...combo, ingredients: ingredientsList });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Có lỗi xảy ra");
       console.error("Error loading data:", err);

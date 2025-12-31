@@ -3,7 +3,6 @@ import { CategoryNav } from "@/components/category/CategoryNav";
 import MainBanner from "@/components/home/MainBanner";
 import CategoryProductsSection from "@/components/category/CategoryProductsSection";
 import { useCart } from "@/components/cart/CartContext";
-import DailyMarket from "@/components/home/DailyMarket";
 import { categoryService, bannerService } from "@/api";
 import { getProductId, getProductImage } from "@/lib/constants";
 import type { Product } from "@/types";
@@ -89,8 +88,6 @@ export default function HomePage() {
         {/* Main Banner */}
         <MainBanner banners={mainBanners} />
 
-        {/* Daily Market Section - Đi chợ mỗi ngày */}
-        <DailyMarket />
 
         {/* Category Sections - Hiển thị TẤT CẢ danh mục cấp 1 từ API */}
         <div className="space-y-1 sm:space-y-2">
