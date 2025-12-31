@@ -9,7 +9,6 @@ export default function ShoppingCart() {
   const { cartItems, updateQuantity, removeItem, clearCart, markItemsAsOutOfStock } = useCart();
   const navigate = useNavigate();
 
-  // Render theo trạng thái giỏ hàng
   return (
     <div className="min-h-screen bg-blue-50">
       {cartItems.length === 0 ? (
@@ -26,3 +25,17 @@ export default function ShoppingCart() {
     </div>
   );
 }
+
+{/* <div className="min-h-screen bg-blue-50">
+      {cartItems.length === 0 ? (
+        <EmptyCart onContinueShopping={() => navigate("/")} />
+      ) : (
+        <CartWithItems
+          items={cartItems}
+          onUpdateQuantity={updateQuantity}
+          onRemoveItem={removeItem}
+          onClearCart={clearCart}
+          onMarkItemsAsOutOfStock={markItemsAsOutOfStock}
+        />
+      )}
+    </div> */}

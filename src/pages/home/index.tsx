@@ -8,7 +8,6 @@ import { getProductId, getProductImage } from "@/lib/constants";
 import type { Product } from "@/types";
 import type { Banner } from "@/types/banner.type";
 
-// Fix giao diện trang chủ
 interface Category {
   _id?: string;
   id?: string;
@@ -50,7 +49,6 @@ export default function HomePage() {
   const handleAddToCart = (
     product: Product & { selectedQuantity?: number }
   ) => {
-    // Chuyển đổi Product sang CartItem
     addToCart({
       id: getProductId(product),
       name: product.name,
@@ -62,7 +60,6 @@ export default function HomePage() {
       original_price: product.unit_price,
     });
 
-    // TODO: Hiển thị thông báo đã thêm vào giỏ hàng
   };
 
   if (loading) {
@@ -85,11 +82,8 @@ export default function HomePage() {
       </div>
 
       <div className="w-full">
-        {/* Main Banner */}
         <MainBanner banners={mainBanners} />
 
-
-        {/* Category Sections - Hiển thị TẤT CẢ danh mục cấp 1 từ API */}
         <div className="space-y-1 sm:space-y-2">
           {categories.map((category) => (
             <CategoryProductsSection
@@ -100,7 +94,6 @@ export default function HomePage() {
             />
           ))}
 
-          {/* Hiển thị message nếu chưa có categories */}
           {categories.length === 0 && (
             <div className="bg-white rounded-lg p-8 text-center">
               <p className="text-gray-500">
@@ -113,3 +106,11 @@ export default function HomePage() {
     </div>
   );
 }
+
+// {categories.length === 0 && (
+//             <div className="bg-white rounded-lg p-8 text-center">
+//               <p className="text-gray-500">
+//                 Chưa có danh mục sản phẩm. Vui lòng thêm danh mục trong trang quản trị.
+//               </p>
+//             </div>
+//           )}
