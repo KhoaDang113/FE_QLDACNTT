@@ -8,7 +8,6 @@ import {
   Boxes,
   Store,
   Image,
-  Utensils,
   Star,
   MessageSquare,
 } from "lucide-react";
@@ -31,11 +30,6 @@ const menuItems = [
     label: "Quản lý Sản phẩm",
     href: "/admin/products",
     icon: Package,
-  },
-  {
-    label: "Quản lý Combo",
-    href: "/admin/combos",
-    icon: Utensils,
   },
   {
     label: "Quản lý Danh mục",

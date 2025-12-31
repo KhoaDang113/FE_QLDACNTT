@@ -32,6 +32,64 @@ export default function ProductDetail() {
   // Get product ID from URL params
   const productId = id || "";
 
+// // Load product data
+//   useEffect(() => {
+//     const loadProductData = async () => {
+//       if (!productId) {
+//         console.log("❌ No productId provided");
+//         return;
+//       }
+
+//       console.log("🔍 Loading product with ID:", productId);
+
+//       try {
+//         setLoading(true);
+//         const [productData, bannersData] = await Promise.all([
+//           productService.getProductById(productId),
+//           bannerService.getAllBanners(),
+//         ]);
+
+//         console.log("✅ Product loaded:", productData);
+//         console.log("✅ Banners loaded:", bannersData);
+
+//         setProduct(productData);
+//         setBanners(bannersData || []);
+//         setImageErrors({}); // Reset image errors khi load product mới
+
+//         // Load related products from same category
+//         try {
+//           const related = await productService.getRelatedProducts(productId, 10);
+//           // Shuffle and keep all 10 products
+//           const shuffled = related.sort(() => 0.5 - Math.random());
+//           setRelatedProducts(shuffled);
+//           console.log("✅ Related products loaded:", shuffled);
+//         } catch {
+//           console.log("⚠️ Could not load related products");
+//         }
+//       } catch (error: unknown) {
+//         const err = error as { response?: { data: unknown; status: unknown } };
+//         console.error("❌ Error loading product:", error);
+//         console.error("❌ Error response:", err.response?.data);
+//         console.error("❌ Error status:", err.response?.status);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     loadProductData();
+//   }, [productId]);
+
+//   // Check scroll position for navigation buttons
+//   const checkScroll = () => {
+//     const container = thumbsRef.current;
+//     if (container) {
+//       const { scrollLeft, scrollWidth, clientWidth } = container;
+//       setShowLeftButton(scrollLeft > 1);
+//       const isAtEnd = scrollLeft >= scrollWidth - clientWidth - 1;
+//       setShowRightButton(!isAtEnd);
+//     }
+//   };
+
   // Load product data
   useEffect(() => {
     const loadProductData = async () => {

@@ -10,9 +10,6 @@ import EditProductPage from "@/pages/admin/products/edit/[id]";
 import AdminBanners from "@/pages/admin/banners";
 import AddBannerPage from "@/pages/admin/banners/add";
 import EditBannerPage from "@/pages/admin/banners/edit/[id]";
-import AdminCombos from "@/pages/admin/combos";
-import AddComboPage from "@/pages/admin/combos/add";
-import EditComboPage from "@/pages/admin/combos/edit/[id]";
 import AdminRatings from "@/pages/admin/ratings";
 import AdminComments from "@/pages/admin/comments";
 
@@ -198,18 +195,6 @@ const router: RouteObject[] = [
         element: <EditBannerPage />,
       },
       {
-        path: "/admin/combos",
-        element: <AdminCombos />,
-      },
-      {
-        path: "/admin/combos/add",
-        element: <AddComboPage />,
-      },
-      {
-        path: "/admin/combos/edit/:id",
-        element: <EditComboPage />,
-      },
-      {
         path: "/admin/ratings",
         element: <AdminRatings />,
       },
@@ -259,5 +244,4 @@ const routerBroswer = createBrowserRouter(router, {
 if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual';
 }
-
 export default routerBroswer;
