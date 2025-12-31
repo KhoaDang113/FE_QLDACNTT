@@ -210,3 +210,11 @@ export default function PaymentFailedPage() {
     </div>
   );
 }
+
+// {/* Footer */}
+//         <div className="bg-gray-50 px-6 py-4 sm:px-8 text-center text-sm text-gray-600 border-t">
+//           <p>
+//             Đơn hàng của bạn vẫn được lưu. Bạn có thể thử thanh toán lại bất kỳ
+//             lúc nào.
+//           </p>
+//         </div>

@@ -238,3 +238,10 @@ export default function PaymentSuccessPage() {
     </div>
   );
 }
+
+// {/* Footer */ }
+// <div className="text-center mt-6 py-4">
+//   <p className="text-gray-500 text-sm">
+//     Cần hỗ trợ? <button className="text-green-600 font-medium hover:underline">Liên hệ ngay</button>
+//   </p>
+// </div>
