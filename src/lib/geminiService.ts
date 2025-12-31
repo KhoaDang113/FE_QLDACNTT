@@ -5,18 +5,12 @@ import productService from "@/api/services/productService";
 import categoryService from "@/api/services/catalogService";
 import comboService from "@/api/services/comboService";
 
-// Khởi tạo Gemini AI
 const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_API_GEMINI,
 });
 
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODEL = "gemini-2.5-flash-lite";
 
-/**
- * Helper function để parse JSON response từ Gemini API
- * @param responseText - Raw text response từ Gemini
- * @returns T - Parsed JSON object/array
- */
 function parseGeminiJsonResponse<T>(responseText: string): T | null {
   if (!responseText) return null;
 
