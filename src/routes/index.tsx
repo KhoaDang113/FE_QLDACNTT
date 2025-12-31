@@ -44,12 +44,7 @@ import {
   PublicRoute,
   AdminRoute,
   StaffRoute,
-  ShipperRoute,
 } from "@/components/auth/ProtectedRoute";
-import ShipperDashboard from "@/pages/shipper";
-import ShipperProfile from "@/pages/shipper/ShipperProfile";
-import ShipperLayout from "@/layouts/ShipperLayout";
-
 
 const router: RouteObject[] = [
   // User
@@ -253,25 +248,6 @@ const router: RouteObject[] = [
     ],
   },
 
-  // Shipper routes
-  {
-    path: "/shipper",
-    element: (
-      <ShipperRoute>
-        <ShipperLayout />
-      </ShipperRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: <ShipperDashboard />,
-      },
-      {
-        path: "profile",
-        element: <ShipperProfile />,
-      },
-    ],
-  },
 ];
 
 const routerBroswer = createBrowserRouter(router, {

@@ -87,23 +87,3 @@ export function StaffRoute({ children }: ProtectedRouteProps) {
 
   return children;
 }
-
-/**
- * Component bảo vệ shipper routes
- */
-export function ShipperRoute({ children }: ProtectedRouteProps) {
-  const location = useLocation();
-  const isAuth = authService.isAuthenticated();
-  const currentUser = authService.getCurrentUser();
-
-  if (!isAuth) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  // Kiểm tra role shipper
-  if (currentUser?.role !== "shipper") {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-}
