@@ -31,17 +31,14 @@ export default function ProductsPage() {
   const { showNotification } = useNotification();
   const { addToCart } = useCart();
 
-  // Lấy parameters từ URL
   const categoryFromUrl = searchParams.get("category");
-  const brandsFromUrl = searchParams.get("brand"); // Đổi từ "brands" sang "brand"
+  const brandsFromUrl = searchParams.get("brand");
   const sortParam = searchParams.get("sort") || "";
 
-  // States for advanced filters
   const [allCategories, setAllCategories] = useState<(CategoryType & { subCategories?: CategoryType[] })[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loadingFilters, setLoadingFilters] = useState(true);
 
-  // Fetch category info và products khi categoryFromUrl thay đổi
   useEffect(() => {
     const loadCategoryData = async () => {
       if (!categoryFromUrl) {
@@ -60,11 +57,8 @@ export default function ProductsPage() {
         );
         setCurrentCategory(category);
 
-        // 2. Kiểm tra xem category này là level 1 hay level 2
-        // Backend transform _id thành id khi serialize JSON, nên ưu tiên id trước
         const categoryId = category.id || category._id || "";
 
-        // Xử lý parent_id: có thể là string, object (populated), hoặc null
         let parentIdValue: string | null = null;
         if (category.parent_id) {
           if (typeof category.parent_id === "string") {
@@ -73,7 +67,6 @@ export default function ProductsPage() {
             typeof category.parent_id === "object" &&
             category.parent_id !== null
           ) {
-            // Nếu được populate, lấy id từ object
             parentIdValue =
               (category.parent_id as any).id ||
               (category.parent_id as any)._id ||
@@ -83,9 +76,6 @@ export default function ProductsPage() {
 
         const isLevel1 = !parentIdValue;
 
-        // 3. Fetch subcategories hoặc siblings từ getAllCategories (giống CategorySidebar)
-        // Sử dụng getAllCategories() vì nó đã có nested structure với subCategories
-
         try {
           const allCategories = await categoryService.getAllCategories();
           if (
@@ -93,7 +83,6 @@ export default function ProductsPage() {
             Array.isArray(allCategories) &&
             allCategories.length > 0
           ) {
-            // Helper function để so sánh ID (chuyển về string để so sánh)
             const compareIds = (
               id1: string | undefined | null,
               id2: string | undefined | null
@@ -103,13 +92,10 @@ export default function ProductsPage() {
             };
 
             if (isLevel1) {
-              // Category level 1: Tìm category này trong allCategories và lấy subCategories
-              // Tìm theo ID hoặc slug (fallback)
               const currentCategoryData = allCategories.find(
                 (cat: CategoryType & { subCategories?: CategoryType[] }) => {
                   const catId = cat.id || cat._id;
                   const catSlug = cat.slug;
-                  // So sánh theo ID hoặc slug
                   return (
                     compareIds(catId, categoryId) || catSlug === categoryFromUrl
                   );
@@ -164,16 +150,10 @@ export default function ProductsPage() {
             console.error("Error stack:", error.stack);
           }
           setCategories([]);
-          // Không throw error để không block việc load products
         }
 
-        // 4. Lấy banners cho category hiện tại
         await fetchBanners(categoryFromUrl);
-
-        // 5. Lấy products theo category slug (không block bởi categories)
         await fetchProductsByCategory(categoryFromUrl);
-
-        // 6. Lấy promotion products
         await fetchPromotionProducts(categoryFromUrl);
       } catch (error) {
         console.error("=== Error loading category data ===");
@@ -201,19 +181,16 @@ export default function ProductsPage() {
       }
     };
 
-    // Debounce: Đợi 1s sau khi brand thay đổi để user có thể chọn nhiều brands
     const timeoutId = setTimeout(() => {
       loadCategoryData();
-    }, brandsFromUrl ? 1000 : 0); // 1s debounce cho brand filter, instant cho category/sort
-
+    }, brandsFromUrl ? 1000 : 0);
     return () => clearTimeout(timeoutId);
   }, [categoryFromUrl, brandsFromUrl, sortParam, showNotification]);
 
-  // Đồng bộ selectedBrands với URL (space-separated)
   useEffect(() => {
     if (brandsFromUrl) {
       const brandsArray = brandsFromUrl
-        .split(" ") // Đổi từ "," sang " " (space)
+        .split(" ")
         .filter((brand) => brand.trim() !== "");
       setSelectedBrands(brandsArray);
     } else {
@@ -221,14 +198,12 @@ export default function ProductsPage() {
     }
   }, [brandsFromUrl]);
 
-  // Load all categories for filters (brands sẽ được load từ getCategoryProducts API)
   useEffect(() => {
     const loadFilters = async () => {
       try {
         setLoadingFilters(true);
         const categoriesData = await categoryService.getAllCategories();
 
-        // Filter active parent categories (level 1)
         const activeCategories = categoriesData.filter((cat) => {
           const isActive = cat.is_active !== undefined ? cat.is_active : true;
           const isDeleted = cat.is_deleted !== undefined ? cat.is_deleted : false;
@@ -247,8 +222,6 @@ export default function ProductsPage() {
     loadFilters();
   }, []);
 
-
-  // Sử dụng API mới getCategoryProducts - trả về cả products VÀ brands
   const fetchProductsByCategory = async (categorySlug: string) => {
     try {
       const result = await productService.getCategoryProducts(categorySlug, {
@@ -256,12 +229,10 @@ export default function ProductsPage() {
         sortOrder: sortParam || undefined,
         skip: 0
       });
-      
-      // Map products từ API format sang frontend format
+
       const mappedProducts = result.products.map(mapProductFromApi);
       setProducts(mappedProducts);
-      
-      // Set brands từ API response - chỉ brands có sản phẩm trong category này
+
       setBrands(result.brands);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -292,7 +263,6 @@ export default function ProductsPage() {
         categorySlug,
         { limit: 12 }
       );
-      // Map products từ API format sang frontend format
       const mappedProducts = apiProducts.map(mapProductFromApi);
       setPromotionProducts(mappedProducts);
     } catch (error) {
@@ -302,7 +272,6 @@ export default function ProductsPage() {
   };
 
   const handleCategorySelect = (category: Category) => {
-    // Update URL khi chọn category
     setSearchParams({ category: category.slug || category.id });
   };
 
@@ -321,7 +290,6 @@ export default function ProductsPage() {
     });
   };
 
-  // Handler for advanced filter changes
   const handleFilterChange = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams);
     if (value) {
@@ -329,7 +297,6 @@ export default function ProductsPage() {
     } else {
       newParams.delete(key);
     }
-    // Keep category param if exists
     if (categoryFromUrl && key !== "category") {
       newParams.set("category", categoryFromUrl);
     }
@@ -338,15 +305,14 @@ export default function ProductsPage() {
 
   const handleBrandToggle = (brandSlug: string) => {
     const newSelectedBrands = selectedBrands.includes(brandSlug)
-      ? selectedBrands.filter((slug) => slug !== brandSlug) // Bỏ chọn nếu đã chọn
-      : [...selectedBrands, brandSlug]; // Thêm vào nếu chưa chọn
+      ? selectedBrands.filter((slug) => slug !== brandSlug)
+      : [...selectedBrands, brandSlug];
 
     setSelectedBrands(newSelectedBrands);
 
-    // Cập nhật URL với brands mới (space-separated)
     const newSearchParams = new URLSearchParams(searchParams);
     if (newSelectedBrands.length > 0) {
-      newSearchParams.set("brand", newSelectedBrands.join(" ")); // Đổi từ "brands" thành "brand" và dấu space
+      newSearchParams.set("brand", newSelectedBrands.join(" "));
     } else {
       newSearchParams.delete("brand");
     }
@@ -354,7 +320,6 @@ export default function ProductsPage() {
     setSearchParams(newSearchParams);
   };
 
-  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-blue-50 w-full">
@@ -370,7 +335,6 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-blue-50 w-full">
-      {/* Category Navigation - Hiển thị subcategories (level 2) hoặc siblings */}
       {categories.length > 0 && (
         <div className="w-full bg-white overflow-hidden mb-4">
           <CategoryNav
@@ -382,12 +346,10 @@ export default function ProductsPage() {
         </div>
       )}
 
-      {/* Filter Section - Sticky Horizontal Layout */}
       {categoryFromUrl && (
         <div className="sticky top-22 bg-white shadow-md border-b border-gray-200 mb-4">
           <div className="max-w-screen-2xl mx-auto">
             <div className="flex items-center gap-4">
-              {/* Brand Filter - Compact Horizontal */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 flex-shrink-0">
@@ -398,8 +360,7 @@ export default function ProductsPage() {
                       </span>
                     )}
                   </div>
-                  
-                  {/* Brands - Inline */}
+
                   <div className="flex-1 min-w-0">
                     <BrandFilter
                       brands={brands}
@@ -409,7 +370,6 @@ export default function ProductsPage() {
                     />
                   </div>
 
-                  {/* Clear Button */}
                   {selectedBrands.length > 0 && (
                     <button
                       onClick={() => {
@@ -466,7 +426,7 @@ export default function ProductsPage() {
           />
         </div>
       )}
-      
+
       {/* Banners Section */}
       {banners.length > 0 && (
         <div className="mb-4">

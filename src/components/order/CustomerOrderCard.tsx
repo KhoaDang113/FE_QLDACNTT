@@ -1,14 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import type { Order } from "@/types/order.type";
 import { useCart } from "@/components/cart/CartContext";
 import { PRODUCT_PLACEHOLDER_IMAGE, getProductImage } from "@/lib/constants";
-import { productService } from "@/api";
-import type { Product } from "@/types/product.type";
 import { OrderRatingDialog } from "./OrderRatingDialog";
 import { ViewOrderRatingDialog } from "./ViewOrderRatingDialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
+
+// Constants moved outside component to avoid recreation on each render
+const STATUS_CONFIG: Record<Order["status"], { label: string; className: string }> = {
+  pending: { label: "Chờ xác nhận", className: "bg-yellow-100 text-yellow-700" },
+  confirmed: { label: "Đã xác nhận", className: "bg-blue-100 text-blue-700" },
+  assigned: { label: "Tài xế đã nhận hàng", className: "bg-purple-100 text-purple-700" },
+  shipped: { label: "Đang giao hàng", className: "bg-cyan-100 text-cyan-700" },
+  delivered: { label: "Đã giao hàng", className: "bg-green-100 text-green-700" },
+  rejected: { label: "Đã từ chối", className: "bg-red-100 text-red-700" },
+  cancelled: { label: "Đã hủy", className: "bg-red-100 text-red-700" },
+};
+
+// Helper functions moved outside component
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}, trước ${date.getHours()}h`;
+};
+
+const formatPrice = (price: number): string =>
+  new Intl.NumberFormat("vi-VN").format(price);
 
 interface CustomerOrderCardProps {
   order: Order;
@@ -17,7 +35,7 @@ interface CustomerOrderCardProps {
   onOrderUpdate?: () => void; // Callback to refetch orders after rating
 }
 
-export function CustomerOrderCard({
+function CustomerOrderCardComponent({
   order,
   onCancelOrder,
   onPayOrder,
@@ -26,154 +44,57 @@ export function CustomerOrderCard({
   const { addToCart } = useCart();
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
-  const [productsMap, setProductsMap] = useState<Record<string, Product>>({});
   const [showRatingDialog, setShowRatingDialog] = useState(false);
   const [showViewRatingDialog, setShowViewRatingDialog] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
 
-  // Format date
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const hours = date.getHours();
-    return `${day}/${month}, trước ${hours}h`;
-  };
+  // Memoize visible products and remaining count
+  const { visibleProducts, remainingCount } = useMemo(() => ({
+    visibleProducts: showAllProducts ? order.items : order.items.slice(0, 3),
+    remainingCount: order.items.length - 3,
+  }), [order.items, showAllProducts]);
 
-  // Format price
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN").format(price);
-  };
-
-  // Fetch đầy đủ product data để lấy hình ảnh giống ProductCard
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const productIds = order.items
-        .map((item) => item.product_id_string || item.product_id.toString())
-        .filter((id) => id && !productsMap[id]);
-
-      if (productIds.length === 0) return;
-
-      try {
-        const products = await Promise.all(
-          productIds.map(async (id) => {
-            try {
-              const product = await productService.getProductById(id);
-              return { id, product };
-            } catch (error) {
-              console.error(`Error fetching product ${id}:`, error);
-              return null;
-            }
-          })
-        );
-
-        const newProductsMap: Record<string, Product> = {};
-        products.forEach((result) => {
-          if (result) {
-            newProductsMap[result.id] = result.product;
-          }
-        });
-
-        setProductsMap((prev) => ({ ...prev, ...newProductsMap }));
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
+  // Memoize order status flags
+  const { canCancel, canPay } = useMemo(() => {
+    const paid = order.paid || order.payment_status === "paid";
+    return {
+      canCancel: order.status === "pending" && !paid,
+      canPay: !paid && order.status !== "cancelled" && order.status !== "rejected",
     };
+  }, [order.paid, order.payment_status, order.status]);
 
-    fetchProducts();
-  }, [order.items]);
-
-  // Hiển thị tối đa 3 sản phẩm, phần còn lại hiện +N
-  const visibleProducts = showAllProducts
-    ? order.items
-    : order.items.slice(0, 3);
-  const remainingCount = order.items.length - 3;
-
-  // Xử lý mua lại
-  const handleBuyAgain = () => {
+  // Handle buy again with useCallback for stable reference
+  const handleBuyAgain = useCallback(() => {
     order.items.forEach((item) => {
-      const productId = item.product_id_string;
-      const fullProduct = productsMap[productId as string];
-      const currentStock = fullProduct?.quantity || fullProduct?.stock_quantity || 9999;
-
       addToCart({
-        id: productId as string,
+        id: item.product_id_string || item.product_id.toString(),
         name: item.name,
         price: item.price,
         image: item.image,
         unit: item.unit,
-        stock: currentStock,
+        stock: 9999,
         quantity: item.quantity,
       });
     });
     toast.success("Đã thêm tất cả sản phẩm vào giỏ hàng!");
-  };
+  }, [order.items, addToCart]);
 
-  // Xử lý hủy đơn
-  const handleCancel = () => {
-    setShowCancelDialog(true);
-  };
+  const handleCancel = useCallback(() => setShowCancelDialog(true), []);
 
-  const handleConfirmCancel = () => {
+  const handleConfirmCancel = useCallback(() => {
     onCancelOrder?.(order.id);
-  };
+  }, [order.id, onCancelOrder]);
 
-  // Xử lý thanh toán
-  const handlePay = () => {
-    if (onPayOrder) {
-      onPayOrder(order.id);
-    } else {
-      // fallback: redirect to payment page
-      window.location.href = `/checkout?orderId=${encodeURIComponent(
-        order.id
-      )}`;
-    }
-  };
+  const handlePay = useCallback(() => {
+    onPayOrder?.(order.id) ?? (window.location.href = `/checkout?orderId=${encodeURIComponent(order.id)}`);
+  }, [order.id, onPayOrder]);
 
-  // Kiểm tra xem có thể hủy đơn không (chỉ pending và chưa thanh toán mới hủy được)
-  const isPaid = order.paid || order.payment_status === "paid";
-  const canCancel = order.status === "pending" && !isPaid;
+  const handleImageError = useCallback((itemId: string) => {
+    setImageErrors(prev => ({ ...prev, [itemId]: true }));
+  }, []);
 
-  // Kiểm tra có thể thanh toán hay không
-  const canPay =
-    !(order.paid || order.payment_status === "paid") &&
-    order.status !== "cancelled" &&
-    order.status !== "rejected";
-
-  // Nhãn trạng thái
-  const statusConfig: Record<
-    Order["status"],
-    { label: string; className: string }
-  > = {
-    pending: {
-      label: "Chờ xác nhận",
-      className: "bg-yellow-100 text-yellow-700",
-    },
-    confirmed: {
-      label: "Đã xác nhận",
-      className: "bg-blue-100 text-blue-700",
-    },
-    assigned: {
-      label: "Tài xế đã nhận hàng, đợi tài xế đi giao",
-      className: "bg-purple-100 text-purple-700",
-    },
-    shipped: {
-      label: "Đang giao hàng",
-      className: "bg-cyan-100 text-cyan-700",
-    },
-    delivered: {
-      label: "Đã giao hàng",
-      className: "bg-green-100 text-green-700",
-    },
-    rejected: {
-      label: "Đã từ chối",
-      className: "bg-red-100 text-red-700",
-    },
-    cancelled: {
-      label: "Đã hủy",
-      className: "bg-red-100 text-red-700",
-    },
-  };
+  // Get current status config
+  const currentStatus = STATUS_CONFIG[order.status] ?? { label: order.status, className: "bg-gray-100 text-gray-700" };
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
@@ -186,8 +107,8 @@ export function CustomerOrderCard({
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusConfig[order.status]?.className ?? "bg-gray-100 text-gray-700"}`}>
-            {statusConfig[order.status]?.label ?? order.status}
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ${currentStatus.className}`}>
+            {currentStatus.label}
           </span>
 
           {/* Payment status badge */}
@@ -207,21 +128,13 @@ export function CustomerOrderCard({
       <div className="p-4">
         <div className="flex items-center gap-3">
           {visibleProducts.map((item) => {
-            // Lấy product đầy đủ từ productsMap (đã fetch từ API) hoặc dùng item data
-            const productId = item.product_id_string || item.product_id.toString();
-            const fullProduct = productsMap[productId];
-
-            // Sử dụng product đầy đủ nếu có, nếu không thì dùng item data
-            const productForImage = fullProduct || {
-              image_primary: item.image_primary || item.image,
-              image_url: item.image_url || item.image,
-              images: item.images || (item.image ? [item.image] : undefined),
-            };
-
-            // Sử dụng getProductImage giống ProductCard để đảm bảo nhất quán
             const imageUrl = imageErrors[item.id]
               ? PRODUCT_PLACEHOLDER_IMAGE
-              : getProductImage(productForImage);
+              : getProductImage({
+                image_primary: item.image_primary || item.image,
+                image_url: item.image_url || item.image,
+                images: item.images || (item.image ? [item.image] : undefined),
+              });
 
             return (
               <div key={item.id} className="relative">
@@ -230,17 +143,10 @@ export function CustomerOrderCard({
                     src={imageUrl}
                     alt={item.name}
                     className="w-full h-full object-cover"
-                    onError={() => {
-                      setImageErrors((prev) => ({ ...prev, [item.id]: true }));
-                    }}
+                    loading="lazy"
+                    onError={() => handleImageError(item.id)}
                   />
                 </div>
-                {/* Promotion badge nếu có giảm giá */}
-                {item.price < 100000 && (
-                  <div className="absolute -top-2 -left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-md font-bold shadow-md">
-                    -{Math.floor(Math.random() * 30 + 10)}%
-                  </div>
-                )}
               </div>
             );
           })}
@@ -387,3 +293,5 @@ export function CustomerOrderCard({
     </div>
   );
 }
+
+export const CustomerOrderCard = memo(CustomerOrderCardComponent);

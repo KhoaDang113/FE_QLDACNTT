@@ -34,7 +34,6 @@ export default function PaymentFailedPage() {
     fetchOrder();
   }, [orderId]);
 
-  // Format price
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN").format(price);
   };
@@ -85,7 +84,6 @@ export default function PaymentFailedPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-100 flex items-center justify-center px-4 py-8">
       <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full overflow-hidden">
-        {/* Failed header */}
         <div className="bg-gradient-to-r from-red-500 to-orange-600 px-6 py-12 sm:px-8 text-center">
           <div className="flex justify-center mb-4">
             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
@@ -100,9 +98,7 @@ export default function PaymentFailedPage() {
           </p>
         </div>
 
-        {/* Content */}
         <div className="p-6 sm:p-8">
-          {/* Error info */}
           <div className="bg-red-50 rounded-lg p-4 mb-6 border border-red-200">
             <h3 className="font-semibold text-red-900 mb-2">Lý do có thể:</h3>
             <ul className="list-disc list-inside space-y-1 text-sm text-red-800">
@@ -116,7 +112,6 @@ export default function PaymentFailedPage() {
 
           {order && (
             <>
-              {/* Order ID & Status */}
               <div className="bg-orange-50 rounded-lg p-4 mb-6 border border-orange-200">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -138,7 +133,6 @@ export default function PaymentFailedPage() {
                 </div>
               </div>
 
-              {/* What to do next */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <h4 className="font-semibold text-blue-900 mb-3">
                   Bạn có thể thử:
@@ -151,7 +145,6 @@ export default function PaymentFailedPage() {
                 </ol>
               </div>
 
-              {/* Shipping info */}
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <h3 className="font-semibold text-gray-900 mb-3">
                   Thông tin giao hàng
@@ -174,7 +167,6 @@ export default function PaymentFailedPage() {
             </>
           )}
 
-          {/* Action buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               to="/my-orders"
@@ -190,7 +182,6 @@ export default function PaymentFailedPage() {
             </Link>
           </div>
 
-          {/* Support note */}
           <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center text-sm text-yellow-800">
             <p className="mb-2">Vẫn gặp vấn đề?</p>
             <button className="text-[#007E42] font-medium hover:underline bg-none border-none cursor-pointer">
@@ -199,7 +190,6 @@ export default function PaymentFailedPage() {
           </div>
         </div>
 
-        {/* Footer */}
         <div className="bg-gray-50 px-6 py-4 sm:px-8 text-center text-sm text-gray-600 border-t">
           <p>
             Đơn hàng của bạn vẫn được lưu. Bạn có thể thử thanh toán lại bất kỳ
@@ -210,11 +200,3 @@ export default function PaymentFailedPage() {
     </div>
   );
 }
-
-// {/* Footer */}
-//         <div className="bg-gray-50 px-6 py-4 sm:px-8 text-center text-sm text-gray-600 border-t">
-//           <p>
-//             Đơn hàng của bạn vẫn được lưu. Bạn có thể thử thanh toán lại bất kỳ
-//             lúc nào.
-//           </p>
-//         </div>

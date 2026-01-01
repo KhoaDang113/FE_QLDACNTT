@@ -49,12 +49,11 @@ const createTimeoutSignal = (timeoutMs: number): AbortSignal => {
   return controller.signal;
 };
 
-// Helper to normalize string for comparison - xử lý tốt hơn cho tiếng Việt
 const normalizeString = (str: string): string => {
   return str
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/đ/g, "d")
     .replace(/Đ/g, "D")
     .replace(/thành phố|thanh pho|tp\.|tp /gi, "")
@@ -65,22 +64,19 @@ const normalizeString = (str: string): string => {
     .replace(/phường|phuong |p\.|p /gi, "")
     .replace(/xã|xa /gi, "")
     .replace(/thị trấn|thi tran|tt\.|tt /gi, "")
-    .replace(/\s+/g, " ") // Collapse multiple spaces
+    .replace(/\s+/g, " ")
     .trim();
 };
 
-// Advanced matching function for Vietnamese place names
 const matchPlaceName = (searchTerm: string, candidateName: string): number => {
   const normSearch = normalizeString(searchTerm);
   const normCandidate = normalizeString(candidateName);
 
-  // Exact match after normalization
   if (normSearch === normCandidate) return 100;
 
   return 0;
 };
 
-// Find best matching item from list
 const findBestMatch = <T extends { name: string }>(
   searchTerm: string | undefined,
   candidates: T[],

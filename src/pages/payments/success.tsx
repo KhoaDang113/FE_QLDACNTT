@@ -73,7 +73,6 @@ export default function PaymentSuccessPage() {
 
   return (
     <div className="min-h-screen bg-blue-50">
-      {/* Header */}
       <div className="bg-white border-b">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <h1 className="text-xl font-bold text-gray-800">Đặt hàng thành công</h1>
@@ -81,7 +80,6 @@ export default function PaymentSuccessPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Success Banner */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
           <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-8 text-center">
             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -94,7 +92,6 @@ export default function PaymentSuccessPage() {
 
         {order && (
           <>
-            {/* Order Summary Card */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-4">
               <div className="flex items-center justify-between pb-4 border-b border-gray-100">
                 <div className="flex items-center gap-3">
@@ -117,7 +114,6 @@ export default function PaymentSuccessPage() {
                 <p className="text-3xl font-bold text-green-600">{formatPrice(order.total_amount)}đ</p>
               </div>
 
-              {/* Shipping Info */}
               <div className="pt-4">
                 <div className="flex items-center gap-2 mb-4">
                   <Truck className="w-5 h-5 text-gray-400" />
@@ -149,7 +145,6 @@ export default function PaymentSuccessPage() {
               </div>
             </div>
 
-            {/* Products Card */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-4">
               <div className="flex items-center gap-2 mb-4">
                 <ShoppingBag className="w-5 h-5 text-gray-400" />
@@ -175,7 +170,6 @@ export default function PaymentSuccessPage() {
               </div>
             </div>
 
-            {/* Next Steps Card */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-4">
               <h3 className="font-semibold text-gray-800 mb-4">Bước tiếp theo</h3>
               <div className="space-y-4">
@@ -211,7 +205,6 @@ export default function PaymentSuccessPage() {
           </>
         )}
 
-        {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Link to="/my-orders" className="flex-1">
             <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-base font-medium rounded-lg flex items-center justify-center gap-2">
@@ -228,7 +221,6 @@ export default function PaymentSuccessPage() {
           </Link>
         </div>
 
-        {/* Footer */}
         <div className="text-center mt-6 py-4">
           <p className="text-gray-500 text-sm">
             Cần hỗ trợ? <button className="text-green-600 font-medium hover:underline">Liên hệ ngay</button>
@@ -238,10 +230,3 @@ export default function PaymentSuccessPage() {
     </div>
   );
 }
-
-// {/* Footer */ }
-// <div className="text-center mt-6 py-4">
-//   <p className="text-gray-500 text-sm">
-//     Cần hỗ trợ? <button className="text-green-600 font-medium hover:underline">Liên hệ ngay</button>
-//   </p>
-// </div>

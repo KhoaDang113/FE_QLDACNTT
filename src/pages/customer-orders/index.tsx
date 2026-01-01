@@ -1,22 +1,35 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CustomerOrderCard } from "@/components/order/CustomerOrderCard";
 import { useOrders } from "@/hooks/useOrders";
 
+type FilterType = "all" | "pending" | "delivered" | "cancelled";
+
+const FILTER_TABS: { key: FilterType; label: string }[] = [
+  { key: "all", label: "Tất cả" },
+  { key: "pending", label: "Đang xử lý" },
+  { key: "delivered", label: "Đã giao" },
+  { key: "cancelled", label: "Đã hủy" },
+];
+
+const FILTER_LABELS: Record<FilterType, string> = {
+  all: "",
+  pending: "Đang xử lý",
+  delivered: "Đã giao",
+  cancelled: "Đã hủy",
+};
+
 export default function CustomerOrdersPage() {
   const { orders, loading, error, cancelOrder, payOrder, fetchOrders } = useOrders();
-  const [filter, setFilter] = useState<
-    "all" | "pending" | "delivered" | "cancelled"
-  >("all");
+  const [filter, setFilter] = useState<FilterType>("all");
 
-  // Filter orders theo trạng thái
-  const filteredOrders = orders.filter((order) => {
-    if (filter === "all") return true;
-    if (filter === "pending")
-      return order.status === "pending" || order.status === "confirmed";
-    return order.status === filter;
-  });
+  const filteredOrders = useMemo(() =>
+    orders.filter((order) => {
+      if (filter === "all") return true;
+      if (filter === "pending") return order.status === "pending" || order.status === "confirmed";
+      return order.status === filter;
+    }), [orders, filter]);
 
   // Loading state
   if (loading) {
@@ -96,42 +109,18 @@ export default function CustomerOrdersPage() {
         {/* Filter tabs */}
         <div className="mb-6 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
           <div className="bg-white rounded-lg border border-gray-200 p-1 inline-flex min-w-max">
-            <button
-              onClick={() => setFilter("all")}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${filter === "all"
-                  ? "bg-[#007E42] text-white shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-                }`}
-            >
-              Tất cả
-            </button>
-            <button
-              onClick={() => setFilter("pending")}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${filter === "pending"
-                  ? "bg-[#007E42] text-white shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-                }`}
-            >
-              Đang xử lý
-            </button>
-            <button
-              onClick={() => setFilter("delivered")}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${filter === "delivered"
-                  ? "bg-[#007E42] text-white shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-                }`}
-            >
-              Đã giao
-            </button>
-            <button
-              onClick={() => setFilter("cancelled")}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${filter === "cancelled"
-                  ? "bg-[#007E42] text-white shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-                }`}
-            >
-              Đã hủy
-            </button>
+            {FILTER_TABS.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${filter === key
+                    ? "bg-[#007E42] text-white shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                  }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -171,12 +160,7 @@ export default function CustomerOrdersPage() {
                 <p className="text-gray-600 mb-6">
                   {filter === "all"
                     ? "Bạn chưa có đơn hàng nào. Hãy bắt đầu mua sắm ngay!"
-                    : `Bạn chưa có đơn hàng nào ở trạng thái "${filter === "pending"
-                      ? "Đang xử lý"
-                      : filter === "delivered"
-                        ? "Đã giao"
-                        : "Đã hủy"
-                    }"`}
+                    : `Bạn chưa có đơn hàng nào ở trạng thái "${FILTER_LABELS[filter]}"`}
                 </p>
                 <Link
                   to="/"
