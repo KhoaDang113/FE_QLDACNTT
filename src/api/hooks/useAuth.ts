@@ -109,10 +109,8 @@ export const useAuth = () => {
       window.location.href = "/";
     } catch (err) {
       console.error("Logout error:", err);
-      // Vẫn xóa dữ liệu local nếu có lỗi
       localStorage.removeItem("accessToken");
       localStorage.removeItem("user");
-      // Clear cart
       const userStr = localStorage.getItem("user");
       if (userStr) {
         try {
@@ -121,7 +119,6 @@ export const useAuth = () => {
             localStorage.removeItem(`cart_${user.id}`);
           }
         } catch {
-          // Ignore parse error
         }
       }
       localStorage.removeItem("cart_guest");
@@ -130,25 +127,17 @@ export const useAuth = () => {
     }
   };
 
-  /**
-   * Lấy user hiện tại từ localStorage
-   */
   const getCurrentUser = () => {
     const userStr = localStorage.getItem("user");
     return userStr ? JSON.parse(userStr) : null;
   };
 
-  /**
-   * Kiểm tra đã đăng nhập chưa
-   */
   const isAuthenticated = () => {
     return !!localStorage.getItem("accessToken");
   };
 
   return {
     loginEmail,
-    // loginPhone,
-    // verifyLoginSms,
     registerEmail,
     verifyEmail,
     logout,

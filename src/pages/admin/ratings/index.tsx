@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Eye, MessageSquare } from "lucide-react";
+import { Eye, MessageSquare, Star } from "lucide-react";
 import orderRatingService from "@/api/services/orderRatingService";
-import type { OrderRating, RatingListResponse } from "@/types/order-rating.type";
+import type { RatingListResponse } from "@/types/order-rating.type";
 import { RatingDetailModal } from "@/components/admin/ratings/RatingDetailModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +50,6 @@ export default function RatingsPage() {
   };
 
   const handleResponseSubmitted = () => {
-    // Reload current page after response is submitted
     loadRatings(currentPage);
   };
 
@@ -68,10 +67,9 @@ export default function RatingsPage() {
     });
   };
 
-  // Calculate stats
   const stats = ratings ? {
     total: ratings.total,
-    avgRating: ratings.data.length > 0 
+    avgRating: ratings.data.length > 0
       ? (ratings.data.reduce((sum, r) => sum + r.rating_overall, 0) / ratings.data.length).toFixed(1)
       : "0",
     pending: ratings.data.filter(r => !r.admin_response).length,
@@ -81,11 +79,20 @@ export default function RatingsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Quản Lý Đánh Giá</h1>
-        <p className="text-muted-foreground mt-1">
-          Xem và phản hồi đánh giá từ khách hàng
-        </p>
+      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl p-6 text-white shadow-lg">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+              <Star className="w-8 h-8" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">Quản Lý Đánh Giá</h1>
+              <p className="text-yellow-100 mt-1">
+                Xem và phản hồi đánh giá từ khách hàng
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -165,14 +172,14 @@ export default function RatingsPage() {
                     <TableRow key={rating._id}>
                       <TableCell className="font-medium">
                         {(() => {
-                          const orderId = typeof rating.order_id === 'object' && rating.order_id 
-                            ? rating.order_id._id 
+                          const orderId = typeof rating.order_id === 'object' && rating.order_id
+                            ? rating.order_id._id
                             : rating.order_id;
                           return `#${String(orderId).slice(-6).toUpperCase()}`;
                         })()}
                       </TableCell>
                       <TableCell>
-                        {typeof rating.user_id === 'object' 
+                        {typeof rating.user_id === 'object'
                           ? rating.user_id?.full_name || rating.user_id?.email || 'N/A'
                           : 'N/A'}
                       </TableCell>
