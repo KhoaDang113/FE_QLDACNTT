@@ -32,7 +32,7 @@ export function AddressProvider({ children }: { children: ReactNode }) {
   const loadDefaultAddress = useCallback(async () => {
     try {
       const response = await addressService.getAddresses()
-      
+
       const addresses = response.addresses || [];
       const defaultAddress = addresses.find((addr) => addr.is_default);
 
@@ -94,3 +94,11 @@ export function useAddress() {
   }
   return context;
 }
+
+// export function useAddress() {
+//   const context = useContext(AddressContext);
+//   if (!context) {
+//     throw new Error("useAddress must be used within AddressProvider");
+//   }
+//   return context;
+// }

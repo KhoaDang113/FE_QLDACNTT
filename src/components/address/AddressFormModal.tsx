@@ -761,3 +761,27 @@ export function AddressFormModal({
   );
 }
 
+// {/* Submit button */}
+//                 <Button
+//                   type="submit"
+//                   className="w-full bg-green-600 hover:bg-green-700 text-white py-3 mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed"
+//                   disabled={submitting || loading || geocoding || !coordinates}
+//                 >
+//                   {submitting ? (
+//                     <span className="flex items-center justify-center gap-2">
+//                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+//                       Đang lưu...
+//                     </span>
+//                   ) : geocoding ? (
+//                     <span className="flex items-center justify-center gap-2">
+//                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+//                       Đang tìm tọa độ...
+//                     </span>
+//                   ) : !coordinates ? (
+//                     "Chờ xác định tọa độ..."
+//                   ) : editingAddress ? (
+//                     "Cập nhật"
+//                   ) : (
+//                     "Thêm địa chỉ"
+//                   )}
+//                 </Button>
