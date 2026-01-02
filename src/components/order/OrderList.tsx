@@ -5,6 +5,7 @@ interface OrderListProps {
   orders: Order[];
   onConfirm: (orderId: string) => Promise<void>;
   onCancel: (orderId: string, reason?: string) => Promise<void>;
+  onShip: (orderId: string) => Promise<void>;
   onDeliver: (orderId: string) => Promise<void>;
   onViewDetail: (order: Order) => void;
 }
@@ -13,6 +14,7 @@ export function OrderList({
   orders,
   onConfirm,
   onCancel,
+  onShip,
   onDeliver,
   onViewDetail,
 }: OrderListProps) {
@@ -32,6 +34,7 @@ export function OrderList({
           order={order}
           onConfirm={onConfirm}
           onCancel={onCancel}
+          onShip={onShip}
           onDeliver={onDeliver}
           onViewDetail={onViewDetail}
         />
@@ -39,4 +42,5 @@ export function OrderList({
     </div>
   );
 }
+
 

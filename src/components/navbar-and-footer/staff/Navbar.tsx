@@ -63,7 +63,7 @@ export function StaffNavbar() {
             />
             <div className="flex flex-col justify-center">
               <span className="text-white font-semibold text-lg">
-                Bách Hóa Không Xanh
+                Vật Tư Nông Nghiệp
               </span>
             </div>
           </Link>

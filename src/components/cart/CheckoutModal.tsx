@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { X, User, Phone, MapPin, StickyNote, ShoppingBag, CheckCircle, Building2, Mail, ChevronRight } from "lucide-react";
+import { X, User, Phone, MapPin, StickyNote, ShoppingBag, CheckCircle, ChevronRight } from "lucide-react";
 import type { CartItem } from "@/types/cart.type";
 import type { CreateOrderCustomerInfo } from "@/hooks/useOrders";
 import type { Address } from "@/api/types";
@@ -139,7 +139,7 @@ export default function CheckoutModal({
   }, [isOpen, address, currentUser]);
 
   // Calculate shipping fee when address changes
-  useEffect(() => { 
+  useEffect(() => {
     async function fetchShippingFee() {
       // Use selectedAddress if available, otherwise fall back to global address
       // But only if we have a valid address ID selected
@@ -480,94 +480,7 @@ export default function CheckoutModal({
                     />
                   </div>
 
-                  <div className="border border-gray-200 rounded-xl p-4 bg-gray-50/80 space-y-4">
-                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-800">
-                      <input
-                        type="checkbox"
-                        checked={requestInvoice}
-                        onChange={(e) => setRequestInvoice(e.target.checked)}
-                        className="w-4 h-4 text-[#007E42] rounded border-gray-300 focus:ring-[#007E42]"
-                      />
-                      Xuất hóa đơn công ty
-                    </label>
 
-                    {requestInvoice && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div className="sm:col-span-2">
-                          <label className="flex items-center gap-2 text-xs font-medium text-gray-600 mb-1">
-                            <Building2 className="w-4 h-4 text-[#007E42]" />
-                            Tên công ty *
-                          </label>
-                          <input
-                            type="text"
-                            value={invoiceInfo.companyName}
-                            onChange={(e) =>
-                              setInvoiceInfo((prev) => ({
-                                ...prev,
-                                companyName: e.target.value,
-                              }))
-                            }
-                            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#007E42] focus:border-[#007E42] transition-all outline-none text-sm"
-                            placeholder="Nhập tên công ty"
-                          />
-                        </div>
-                        <div className="sm:col-span-2">
-                          <label className="flex items-center gap-2 text-xs font-medium text-gray-600 mb-1">
-                            <MapPin className="w-4 h-4 text-[#007E42]" />
-                            Địa chỉ công ty *
-                          </label>
-                          <input
-                            type="text"
-                            value={invoiceInfo.companyAddress}
-                            onChange={(e) =>
-                              setInvoiceInfo((prev) => ({
-                                ...prev,
-                                companyAddress: e.target.value,
-                              }))
-                            }
-                            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#007E42] focus:border-[#007E42] transition-all outline-none text-sm"
-                            placeholder="Nhập địa chỉ công ty"
-                          />
-                        </div>
-                        <div>
-                          <label className="flex items-center gap-2 text-xs font-medium text-gray-600 mb-1">
-                            <StickyNote className="w-4 h-4 text-[#007E42]" />
-                            Mã số thuế *
-                          </label>
-                          <input
-                            type="text"
-                            value={invoiceInfo.taxCode}
-                            onChange={(e) =>
-                              setInvoiceInfo((prev) => ({
-                                ...prev,
-                                taxCode: e.target.value,
-                              }))
-                            }
-                            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#007E42] focus:border-[#007E42] transition-all outline-none text-sm"
-                            placeholder="Nhập mã số thuế"
-                          />
-                        </div>
-                        <div>
-                          <label className="flex items-center gap-2 text-xs font-medium text-gray-600 mb-1">
-                            <Mail className="w-4 h-4 text-[#007E42]" />
-                            Email nhận hóa đơn *
-                          </label>
-                          <input
-                            type="email"
-                            value={invoiceInfo.email}
-                            onChange={(e) =>
-                              setInvoiceInfo((prev) => ({
-                                ...prev,
-                                email: e.target.value,
-                              }))
-                            }
-                            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#007E42] focus:border-[#007E42] transition-all outline-none text-sm"
-                            placeholder="Nhập email nhận hóa đơn"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
                   <div className="border border-gray-200 rounded-xl p-4 bg-gray-50/80 space-y-3">
                     <p className="text-sm font-semibold text-gray-800 mb-1">
                       Phương thức thanh toán

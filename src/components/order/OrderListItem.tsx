@@ -9,6 +9,7 @@ interface OrderListItemProps {
   order: Order;
   onConfirm: (orderId: string) => Promise<void>;
   onCancel: (orderId: string, reason?: string) => Promise<void>;
+  onShip: (orderId: string) => Promise<void>;
   onDeliver: (orderId: string) => Promise<void>;
   onViewDetail: (order: Order) => void;
 }
@@ -17,11 +18,12 @@ export function OrderListItem({
   order,
   onConfirm,
   onCancel,
+  onShip,
   onDeliver,
   onViewDetail,
 }: OrderListItemProps) {
   const [actionLoading, setActionLoading] = useState<
-    null | "confirm" | "cancel" | "deliver"
+    null | "confirm" | "cancel" | "ship" | "deliver"
   >(null);
 
   const handleConfirm = async () => {
@@ -56,6 +58,18 @@ export function OrderListItem({
       await onCancel(order.id, reason);
     } catch (error) {
       console.error("Cancel order failed:", error);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleShip = async () => {
+    if (actionLoading) return;
+    try {
+      setActionLoading("ship");
+      await onShip(order.id);
+    } catch (error) {
+      console.error("Ship order failed:", error);
     } finally {
       setActionLoading(null);
     }
@@ -191,9 +205,15 @@ export function OrderListItem({
           )}
           {order.status === "confirmed" && (
             <>
-              <div className="w-full text-center text-sm font-medium py-2 text-yellow-600 bg-yellow-50 rounded">
-                Đơn hàng đang được giao cho tài xế
-              </div>
+              <Button
+                onClick={handleShip}
+                size="sm"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={actionLoading !== null}
+              >
+                <Truck className="w-4 h-4 mr-2" />
+                {actionLoading === "ship" ? "Đang xử lý..." : "Bắt đầu giao hàng"}
+              </Button>
               <Button
                 onClick={() => onViewDetail(order)}
                 variant="outline"
@@ -225,9 +245,15 @@ export function OrderListItem({
           }
           {order.status === "shipped" && (
             <>
-              <div className="w-full text-center text-sm font-medium py-2 text-blue-600 bg-blue-50 rounded">
-                Đơn hàng đang được giao
-              </div>
+              <Button
+                onClick={handleDeliver}
+                size="sm"
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                disabled={actionLoading !== null}
+              >
+                <Check className="w-4 h-4 mr-2" />
+                {actionLoading === "deliver" ? "Đang xử lý..." : "Hoàn thành giao hàng"}
+              </Button>
               <Button
                 onClick={() => onViewDetail(order)}
                 variant="outline"

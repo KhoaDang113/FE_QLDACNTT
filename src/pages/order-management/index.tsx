@@ -16,12 +16,13 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-type FilterType = "all" | "pending" | "confirmed" | "delivered" | "rejected" | "cancelled";
+type FilterType = "all" | "pending" | "confirmed" | "shipped" | "delivered" | "rejected" | "cancelled";
 
 const FILTER_CONFIG: { key: FilterType; label: string; color?: string }[] = [
   { key: "all", label: "Tất Cả" },
   { key: "pending", label: "Chờ Xác Nhận" },
   { key: "confirmed", label: "Đã Xác Nhận" },
+  { key: "shipped", label: "Đang Giao Hàng" },
   { key: "delivered", label: "Đã Giao Hàng" },
   { key: "cancelled", label: "Đã Hủy", color: "red" },
 ];
@@ -30,13 +31,14 @@ const FILTER_TITLES: Record<FilterType, string> = {
   all: "Tất cả đơn hàng",
   pending: "Đơn hàng chờ xác nhận",
   confirmed: "Đơn hàng đã xác nhận",
+  shipped: "Đơn hàng đang giao",
   delivered: "Đơn hàng đã giao",
   rejected: "Đơn hàng đã từ chối",
   cancelled: "Đơn hàng đã hủy",
 };
 
 export default function OrdersPage() {
-  const { orders, loading, error, confirmOrder, cancelOrder, deliverOrder } =
+  const { orders, loading, error, confirmOrder, cancelOrder, shipOrder, deliverOrder } =
     useOrders();
   const { showNotification } = useNotification();
   const [filter, setFilter] = useState<FilterType>("all");
@@ -85,6 +87,34 @@ export default function OrdersPage() {
         type: "success",
         title: "Giao hàng",
         message: `Đã cập nhật đơn hàng ${orderId} sang trạng thái giao thành công.`,
+        duration: 4000,
+      });
+    } catch (err: Error | unknown) {
+      let message = "Không thể cập nhật trạng thái giao hàng.";
+      if (err && typeof err === "object" && "response" in err) {
+        const response = (err as { response?: { data?: { message?: string } } })
+          .response;
+        if (response?.data?.message) {
+          message = response.data.message;
+        }
+      }
+      showNotification({
+        type: "error",
+        title: "Lỗi giao hàng",
+        message,
+        duration: 4000,
+      });
+      throw err;
+    }
+  };
+
+  const handleShipOrder = async (orderId: string) => {
+    try {
+      await shipOrder(orderId);
+      showNotification({
+        type: "success",
+        title: "Giao hàng",
+        message: `Đơn hàng ${orderId} đang được giao.`,
         duration: 4000,
       });
     } catch (err: Error | unknown) {
@@ -221,10 +251,10 @@ export default function OrdersPage() {
                     onClick={() => setFilter(key)}
                     size="sm"
                     className={`text-xs ${filter === key
-                        ? color === "red"
-                          ? "bg-red-600 hover:bg-red-700 text-white"
-                          : "bg-indigo-600 hover:bg-indigo-700 text-white"
-                        : ""
+                      ? color === "red"
+                        ? "bg-red-600 hover:bg-red-700 text-white"
+                        : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                      : ""
                       }`}
                   >
                     {label} ({count})
@@ -276,6 +306,7 @@ export default function OrdersPage() {
                   orders={paginatedOrders}
                   onConfirm={handleConfirmOrder}
                   onCancel={handleCancelOrder}
+                  onShip={handleShipOrder}
                   onDeliver={handleDeliverOrder}
                   onViewDetail={(order) => navigate(`/staff/orders/order/${order.id}`)}
                 />

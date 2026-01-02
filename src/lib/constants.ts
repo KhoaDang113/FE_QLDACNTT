@@ -82,7 +82,7 @@ export const aboutLinks = [
 
 export const contacts = [
   { title: "Hotline", value: "1900 1234", Icon: Phone },
-  { title: "Email", value: "hotro@bachhoaxanh.com", Icon: Mail },
+  { title: "Email", value: "hotro@vattunongnghiep.com", Icon: Mail },
   { title: "Địa chỉ", value: "123 Đường ABC, Quận 1, TP.HCM", Icon: MapPin },
 ] as const satisfies ReadonlyArray<ContactItem>;
 
@@ -187,7 +187,7 @@ export const getProductImage = (product: {
       }
     }
   }
-  
+
   // Kiểm tra image_url: hỗ trợ cả string và mảng
   if (product.image_url) {
     // Nếu là mảng, lấy phần tử đầu tiên
@@ -208,7 +208,7 @@ export const getProductImage = (product: {
       }
     }
   }
-  
+
   // Kiểm tra images array: chỉ chấp nhận string hợp lệ
   if (product.images && Array.isArray(product.images) && product.images.length > 0) {
     const firstImage = product.images[0];
@@ -219,7 +219,7 @@ export const getProductImage = (product: {
       }
     }
   }
-  
+
   // Fallback về placeholder image (giống category)
   return PRODUCT_PLACEHOLDER_IMAGE;
 };
@@ -328,7 +328,7 @@ export const buildCategoryTree = <T extends { _id?: string; id?: string; parent_
   categories.forEach((cat) => {
     const id = getCategoryId(cat);
     const item = categoryMap.get(id);
-    
+
     if (!item) return;
 
     if (isRootCategory(cat)) {

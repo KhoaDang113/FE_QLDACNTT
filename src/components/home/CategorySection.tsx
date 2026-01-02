@@ -21,7 +21,7 @@ export default function CategorySection({
 }: CategorySectionProps) {
   return (
     <div className="mb-2">
-      {/* Container with border frame like Bach Hoa Xanh */}
+      {/* Container with border frame */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         {/* Category Header - With curved bottom border */}
         <div className="relative bg-gradient-to-r from-green-50 to-white py-4 sm:py-5 border-b-2 border-green-100">

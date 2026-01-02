@@ -89,7 +89,7 @@ export function AdminSidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-sidebar-border">
         <h1 className="text-2xl font-bold text-sidebar-primary">Admin</h1>
-        <p className="text-sm text-sidebar-foreground/60">Bách Hóa Xanh</p>
+        <p className="text-sm text-sidebar-foreground/60">Vật Tư Nông Nghiệp</p>
       </div>
 
       {/* Menu */}

@@ -103,7 +103,7 @@ export function CategorySidebar({
     );
   }
 
-  // Mobile Layout - Bách Hóa Xanh Style
+  // Mobile Layout - Two Column Style
   if (isMobile) {
     const selectedCategory = categories.find(cat => expandedCategory === cat.name);
 

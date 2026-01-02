@@ -263,7 +263,7 @@ export function Navbar() {
               />
               <div className="hidden lg:flex flex-col justify-center">
                 <span className="text-white font-semibold text-lg">
-                  Bách Hóa Không Xanh
+                  Vật Tư Nông Nghiệp
                 </span>
                 <p className="text-sm text-white opacity-90">
                   Khách Hàng Là Trên Hết

@@ -60,23 +60,23 @@ export default function SignUp() {
 
     if (Object.keys(newErrors).length === 0 && agreeToTerms) {
       setIsLoading(true);
-      
+
       try {
         const response = await authService.registerEmail(email, password, name);
-        
+
         if (response.success) {
           // Nếu có token và user trong response (tự động đăng nhập sau đăng ký)
           if (response.accessToken && response.user) {
             // Cập nhật Zustand store
             setUser(response.user);
-            
+
             // Đợi một chút để đảm bảo store được persist
             await new Promise(resolve => setTimeout(resolve, 100));
-            
+
             // Dispatch custom event để notify Navbar và các components khác
             window.dispatchEvent(new Event('auth-changed'));
           }
-          
+
           // Chuyển đến trang verify email
           navigate(`/verify-email?email=${encodeURIComponent(email)}`);
         } else {
@@ -298,11 +298,11 @@ export default function SignUp() {
                   className="text-sm text-gray-700 cursor-pointer leading-relaxed select-none"
                 >
                   Tôi đồng ý với{" "}
-                  <a href="https://www.bachhoaxanh.com/quy-che-hoat-dong" className="text-green-600 hover:text-green-700 font-medium hover:underline">
+                  <a href="/terms" className="text-green-600 hover:text-green-700 font-medium hover:underline">
                     Điều khoản
                   </a>{" "}
                   &{" "}
-                  <a href="https://www.bachhoaxanh.com/quy-che-hoat-dong" className="text-green-600 hover:text-green-700 font-medium hover:underline">
+                  <a href="/policy" className="text-green-600 hover:text-green-700 font-medium hover:underline">
                     Chính sách
                   </a>
                 </label>

@@ -153,12 +153,25 @@ export function useOrders() {
     );
   }, []);
 
+  const shipOrder = useCallback(
+    async (orderId: string) => {
+      if (isStaff) {
+        const shippedOrder = await orderService.shipOrder(orderId);
+        replaceOrderInState(shippedOrder);
+      } else {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderId ? { ...order, status: "shipped" } : order
+          )
+        );
+      }
+    },
+    [isStaff, replaceOrderInState]
+  );
+
   const deliverOrder = useCallback(
     async (orderId: string) => {
       if (isStaff) {
-        // Backend yêu cầu trạng thái shipped trước khi delivered
-        const shippedOrder = await orderService.shipOrder(orderId);
-        replaceOrderInState(shippedOrder);
         const deliveredOrder = await orderService.deliverOrderByStaff(orderId);
         replaceOrderInState(deliveredOrder);
       } else {
@@ -279,9 +292,10 @@ export function useOrders() {
     orders,
     loading,
     error,
-    fetchOrders, // Export fetchOrders to allow manual refresh
+    fetchOrders,
     confirmOrder,
     rejectOrder,
+    shipOrder,
     deliverOrder,
     cancelOrder,
     payOrder,

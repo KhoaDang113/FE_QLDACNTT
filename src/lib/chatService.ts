@@ -25,7 +25,7 @@ export async function chatWithAI(
 
     // Tạo context cho AI
     const systemPrompt = `
-Bạn là một trợ lý AI thông minh và thân thiện của siêu thị trực tuyến. 
+Bạn là một trợ lý AI thông minh và thân thiện của Vật Tư Nông Nghiệp - cửa hàng vật tư nông nghiệp trực tuyến. 
 Nhiệm vụ của bạn là hỗ trợ khách hàng với các câu hỏi về:
 - Sản phẩm và giá cả
 - Đơn hàng và giao hàng
@@ -59,7 +59,7 @@ Hãy trả lời một cách:
       role: "model",
       parts: [
         {
-          text: "Xin chào! Tôi là trợ lý AI của siêu thị. Tôi sẵn sàng giúp bạn!",
+          text: "Xin chào! Tôi là trợ lý AI của Vật Tư Nông Nghiệp. Tôi sẵn sàng giúp bạn!",
         },
       ],
     });
