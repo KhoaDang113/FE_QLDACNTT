@@ -1,11 +1,11 @@
 import api from "../axiosConfig";
-import type { 
-  User, 
+import type {
+  User,
   GetUsersParams,
   GetUsersResponse,
   UpdateUserData,
   UpdateUserByAdminData,
-  LockUnlockUserResponse 
+  LockUnlockUserResponse
 } from "@/types";
 
 /**
@@ -23,12 +23,12 @@ class UserService {
    */
   async getProfile(): Promise<User> {
     const response = await api.get<User>(`${this.basePath}/profile`);
-    
+
     // Cập nhật localStorage
     if (response.data) {
       localStorage.setItem("user", JSON.stringify(response.data));
     }
-    
+
     return response.data;
   }
 
@@ -45,13 +45,13 @@ class UserService {
     avatarFile?: File
   ): Promise<User> {
     const formData = new FormData();
-    
+
     // Append dữ liệu text
     if (data.name) formData.append("name", data.name);
     if (data.email) formData.append("email", data.email);
     if (data.phone) formData.append("phone", data.phone);
     if (data.gender) formData.append("gender", data.gender);
-    
+
     // Append file avatar nếu có
     if (avatarFile) {
       formData.append("avatar", avatarFile);
@@ -62,12 +62,12 @@ class UserService {
         "Content-Type": "multipart/form-data",
       },
     });
-    
+
     // Cập nhật localStorage
     if (response.data) {
       localStorage.setItem("user", JSON.stringify(response.data));
     }
-    
+
     return response.data;
   }
 
@@ -104,13 +104,13 @@ class UserService {
     avatarFile?: File
   ): Promise<User> {
     const formData = new FormData();
-    
+
     if (data.name) formData.append("name", data.name);
     if (data.email) formData.append("email", data.email);
     if (data.phone) formData.append("phone", data.phone);
     if (data.gender) formData.append("gender", data.gender);
     if (data.role) formData.append("role", data.role);
-    
+
     if (avatarFile) {
       formData.append("avatar", avatarFile);
     }
@@ -153,4 +153,13 @@ class UserService {
 }
 
 export default new UserService();
+
+// class UserService {
+//   private readonly basePath = "/users";
+
+//   async getProfile(): Promise<User> {
+//     const response = await api.get<User>(`${this.basePath}/profile`);
+//     return response.data;
+//   }
+// }
 

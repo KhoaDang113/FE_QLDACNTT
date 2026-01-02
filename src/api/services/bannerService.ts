@@ -156,3 +156,10 @@ class BannerService {
 }
 
 export default new BannerService();
+
+// async deleteBanner(id: string): Promise<{ message: string }> {
+//     const response = await api.delete<{ message: string }>(
+//       `${this.basePath}/${id}`
+//     );
+//     return response.data;
+//   }

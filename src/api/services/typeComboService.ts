@@ -87,3 +87,12 @@ class TypeComboService {
 }
 
 export default new TypeComboService();
+
+// class TypeComboService {
+//   private readonly basePath = "/type-combos";
+
+//   async getTypeCombos(): Promise<TypeCombo[]> {
+//     const response = await api.get<TypeCombo[]>(this.basePath);
+//     return response.data;
+//   }
+// }

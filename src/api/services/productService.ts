@@ -210,3 +210,13 @@ class ProductService {
 }
 
 export default new ProductService();
+
+// updateProductImage: async (id: string, image: File) => {
+//     const formData = new FormData();
+//     formData.append("image", image);
+//     const response = await api.put<{ message: string }>(
+//       `${this.basePath}/${id}/image`,
+//       formData
+//     );
+//     return response.data;
+//   },

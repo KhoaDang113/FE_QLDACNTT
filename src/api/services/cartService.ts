@@ -46,3 +46,8 @@ class CartService {
 }
 
 export default new CartService();
+
+// async removeFromCart(productId: string): Promise<Cart> {
+//     const response = await api.delete<Cart>(`${this.basePath}/${productId}`);
+//     return response.data;
+// }

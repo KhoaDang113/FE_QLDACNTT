@@ -114,3 +114,10 @@ class ComboService {
 }
 
 export default new ComboService();
+
+// deleteComboWithProducts: async (id: string): Promise<{ message: string; deletedProductsCount: number }> => {
+//     const response = await api.delete<{ message: string; deletedProductsCount: number }>(
+//       `${this.basePath}/${id}/with-products`
+//     );
+//     return response.data;
+//   },

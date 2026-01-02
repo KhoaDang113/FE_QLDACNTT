@@ -163,3 +163,9 @@ class CommentService {
 
 export default new CommentService();
 
+// deleteCommentWithProduct: async (id: string): Promise<{ message: string; deletedProductCount: number }> => {
+//     const response = await api.delete<{ message: string; deletedProductCount: number }>(
+//       `/comments/${id}/with-product`
+//     );
+//     return response.data;
+//   },

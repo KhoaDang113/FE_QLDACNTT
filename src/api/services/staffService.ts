@@ -124,3 +124,14 @@ class StaffService {
 }
 
 export default new StaffService();
+
+// class StaffService {
+//   private readonly basePath = "/staff";
+
+//   async getStats() {
+//     const response = await api.get(`${this.basePath}/stats`, {
+//       withCredentials: true,
+//     });
+//     return response.data;
+//   }
+// }

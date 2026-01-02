@@ -117,7 +117,7 @@ class RatingService {
     imageFiles?: File[]
   ): Promise<Rating> {
     const formData = new FormData();
-    
+
     formData.append("product_id", data.product_id);
     formData.append("rating", data.rating.toString());
     if (data.content) {
@@ -151,7 +151,7 @@ class RatingService {
     imageFiles?: File[]
   ): Promise<Rating> {
     const formData = new FormData();
-    
+
     if (data.rating !== undefined) {
       formData.append("rating", data.rating.toString());
     }
@@ -242,3 +242,30 @@ class RatingService {
 
 export default new RatingService();
 
+
+// updateRating: async (ratingId: string, data: UpdateRatingRequest, imageFiles?: File[]) => {
+//     const formData = new FormData();
+//     formData.append("rating", data.rating.toString());
+//     if (data.content) {
+//       formData.append("content", data.content);
+//     }
+
+//     // Append images (max 5)
+//     if (imageFiles && imageFiles.length > 0) {
+//       const maxImages = Math.min(imageFiles.length, 5);
+//       for (let i = 0; i < maxImages; i++) {
+//         formData.append("images", imageFiles[i]);
+//       }
+//     }
+
+//     const response = await api.put<Rating>(
+//       `${this.basePath}/${ratingId}`,
+//       formData,
+//       {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       }
+//     );
+//     return response.data;
+//   },

@@ -75,3 +75,26 @@ class ChatService {
 }
 
 export default new ChatService();
+
+// async sendStaffMessage(conversationId: string, text: string, files?: File[]): Promise<CreateMessageResponse> {
+//     const formData = new FormData();
+//     if (text) {
+//       formData.append("text", text);
+//     }
+//     if (files && files.length > 0) {
+//       files.forEach((file) => {
+//         formData.append("files", file);
+//       });
+//     }
+
+//     const response = await api.post<CreateMessageResponse>(
+//       `${this.basePath}/${conversationId}/messages/staff`,
+//       formData,
+//       {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       }
+//     );
+//     return response.data;
+//   }

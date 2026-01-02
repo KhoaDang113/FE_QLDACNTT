@@ -1,6 +1,6 @@
 import api from "../axiosConfig";
-import type { 
-  OrderRating, 
+import type {
+  OrderRating,
   OrderRatingRaw,
   CreateOrderRatingDto,
   AdminResponseDto,
@@ -51,7 +51,7 @@ class OrderRatingService {
         limit: number;
         totalPages: number;
       }>(this.basePath, { params });
-      
+
       return {
         ...response.data,
         data: this.mapRatings(response.data.data),
@@ -120,3 +120,10 @@ class OrderRatingService {
 }
 
 export default new OrderRatingService();
+
+// deleteRating: async (id: string): Promise<{ message: string }> => {
+//     const response = await api.delete<{ message: string }>(
+//       `${this.basePath}/${id}`
+//     );
+//     return response.data;
+//   },

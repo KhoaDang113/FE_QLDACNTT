@@ -184,7 +184,7 @@ class AuthService {
 
       await api
         .post(`${this.basePath}/logout`, {}, { withCredentials: true })
-        .catch(() => {});
+        .catch(() => { });
     } finally {
       // Lấy userId trước khi xóa user
       const userStr = localStorage.getItem("user");
@@ -398,3 +398,22 @@ class AuthService {
 }
 
 export default new AuthService();
+
+// clearAuthData(): void {
+//     // Lấy userId trước khi xóa user
+//     const userStr = localStorage.getItem("user");
+//     const userId = userStr
+//       ? (JSON.parse(userStr) as { id?: string })?.id
+//       : null;
+
+//     localStorage.removeItem("accessToken");
+//     localStorage.removeItem("refreshToken");
+//     localStorage.removeItem("user");
+
+//     // Xóa cart của user
+//     if (userId) {
+//       localStorage.removeItem(`cart_${userId}`);
+//     }
+//     // Xóa cart guest nếu có
+//     localStorage.removeItem("cart_guest");
+//   }

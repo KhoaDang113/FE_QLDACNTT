@@ -33,7 +33,7 @@ const brandService = {
   ): Promise<GetBrandsAdminResponse> => {
     const params: any = { page, limit };
     if (key) params.key = key;
-    
+
     const response = await api.get("/brands/brands-admin", { params });
     return response.data;
   },
@@ -148,3 +148,7 @@ const brandService = {
 
 export default brandService;
 
+// deleteBrand: async (id: string): Promise<{ message: string }> => {
+//     const response = await api.delete(`/brands/${id}`);
+//     return response.data;
+//   },

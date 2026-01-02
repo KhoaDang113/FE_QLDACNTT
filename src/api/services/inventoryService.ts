@@ -62,3 +62,10 @@ const inventoryService = {
 
 export default inventoryService;
 
+// deleteInventoryOperation: async (id: string): Promise<{ message: string }> => {
+//     const response = await api.delete<{ message: string }>(
+//       `/inventory/operation/${id}`
+//     );
+//     return response.data;
+//   },
+

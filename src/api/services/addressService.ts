@@ -98,3 +98,7 @@ class AddressService {
 
 export default new AddressService();
 
+// validatePhone(phone: string): boolean {
+//     const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+//     return phoneRegex.test(phone.replace(/\s/g, ""));
+//   }

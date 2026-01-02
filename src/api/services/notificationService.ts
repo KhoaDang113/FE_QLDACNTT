@@ -243,3 +243,10 @@ class NotificationService {
 }
 
 export default new NotificationService();
+
+// deleteNotification: async (id: string): Promise<{ message: string }> => {
+//     const response = await api.delete<{ message: string }>(
+//       `${this.basePath}/${id}`
+//     );
+//     return response.data;
+//   },

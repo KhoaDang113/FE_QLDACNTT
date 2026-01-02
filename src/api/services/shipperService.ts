@@ -63,3 +63,11 @@ const staffOrderService = {
 };
 
 export default staffOrderService;
+
+// updateOrderStatus: async (orderId: string, status: string) => {
+//     const response = await api.patch<BackendOrder>(
+//       `/orders/admin/${orderId}/status`,
+//       { status }
+//     );
+//     return transformOrder(response.data);
+//   },

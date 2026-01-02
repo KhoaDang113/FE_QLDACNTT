@@ -32,3 +32,8 @@ class DashboardService {
 }
 
 export default new DashboardService();
+
+// getStats: async (): Promise<DashboardStats> => {
+//     const response = await api.get<DashboardStats>(this.basePath);
+//     return response.data;
+// },

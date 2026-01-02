@@ -161,10 +161,10 @@ class OrderService {
    */
   async getOrderById(orderId: string, isAdmin = false): Promise<Order> {
     try {
-      const url = isAdmin 
+      const url = isAdmin
         ? `${this.basePath}/admin/${orderId}`
         : `${this.basePath}/${orderId}`;
-        
+
       const response = await api.get<BackendOrder>(url);
       return transformOrder(response.data);
     } catch (error) {
@@ -344,3 +344,10 @@ class OrderService {
 }
 
 export default new OrderService();
+
+// deleteOrder: async (id: string): Promise<{ message: string }> => {
+//     const response = await api.delete<{ message: string }>(
+//       `${this.basePath}/${id}`
+//     );
+//     return response.data;
+//   },

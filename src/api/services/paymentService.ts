@@ -22,3 +22,14 @@ class PaymentService {
 }
 
 export default new PaymentService();
+
+// createPayment: async (orderId: string, method: "momo" | "vnpay") => {
+//     const response = await api.post<CreatePaymentResponse>(
+//       `${this.basePath}/create-payment`,
+//       {
+//         orderId,
+//         payment_method: method,
+//       }
+//     );
+//     return response;
+//   },
