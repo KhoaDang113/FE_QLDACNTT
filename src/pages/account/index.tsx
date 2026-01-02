@@ -12,18 +12,18 @@ export default function AccountPage() {
   const setUser = useAuthStore((state) => state.setUser);
   const currentUser = useAuthStore((state) => state.user);
   const { showNotification } = useNotification();
-  
+
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  
+
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
     email: "",
     gender: "male" as "male" | "female",
   });
-  
+
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
@@ -31,17 +31,17 @@ export default function AccountPage() {
     const loadUserData = async () => {
       try {
         setLoading(true);
-        
+
         // Lấy profile từ API
         const user = await userService.getProfile();
-        
+
         setFormData({
           name: user.name || "",
           phoneNumber: user.phone || user.phoneNumber || "",
           email: user.email || "",
           gender: user.gender || "male",
         });
-        
+
         // Set avatar nếu có (backend dùng field "avatar", không phải "avatarUrl")
         const avatarUrl = user.avatar || user.avatarUrl || DEFAULT_AVATAR_URL;
         setAvatarPreview(avatarUrl);
@@ -53,7 +53,7 @@ export default function AccountPage() {
         setLoading(false);
       }
     };
-    
+
     loadUserData();
   }, []);
 
@@ -75,15 +75,15 @@ export default function AccountPage() {
         setError("Vui lòng chọn file ảnh");
         return;
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         setError("Kích thước ảnh không được vượt quá 5MB");
         return;
       }
-      
+
       setAvatarFile(file);
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -97,18 +97,18 @@ export default function AccountPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    
+
     // Validation
     if (!formData.name?.trim()) {
       setError("Vui lòng nhập họ và tên");
       return;
     }
-    
+
     if (!formData.email?.trim()) {
       setError("Vui lòng nhập email");
       return;
     }
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError("Email không hợp lệ");
@@ -117,7 +117,7 @@ export default function AccountPage() {
 
     try {
       setSaving(true);
-      
+
       // Update profile với userService
       const updatedUser = await userService.updateProfile(
         {
@@ -128,22 +128,38 @@ export default function AccountPage() {
         },
         avatarFile || undefined
       );
-      
+
       // Cập nhật UI (backend trả về field "avatar")
       const newAvatar = updatedUser.avatar || updatedUser.avatarUrl;
       if (newAvatar) {
         setAvatarPreview(newAvatar);
       }
-      
+
       // Cập nhật Zustand store để navbar cũng cập nhật
-      setUser({
-        ...currentUser,
-        ...updatedUser,
-        id: updatedUser._id || updatedUser.id || currentUser?.id || '',
-      });
-      
+      if (currentUser) {
+        setUser({
+          ...currentUser,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          phone: updatedUser.phone,
+          avatar: updatedUser.avatar,
+          gender: updatedUser.gender as "male" | "female" | undefined,
+          id: updatedUser._id || (updatedUser as any).id || currentUser.id,
+        });
+      } else {
+        setUser({
+          id: updatedUser._id || (updatedUser as any).id || '',
+          name: updatedUser.name,
+          email: updatedUser.email,
+          phone: updatedUser.phone,
+          avatar: updatedUser.avatar,
+          gender: updatedUser.gender as "male" | "female" | undefined,
+          role: updatedUser.role,
+        });
+      }
+
       setAvatarFile(null);
-      
+
       // Hiển thị thông báo popup thành công
       showNotification({
         type: "success",
@@ -157,7 +173,7 @@ export default function AccountPage() {
       const errorMessage =
         errorObj.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại";
       setError(errorMessage);
-      
+
       // Hiển thị thông báo popup lỗi
       showNotification({
         type: "error",
@@ -186,8 +202,8 @@ export default function AccountPage() {
       {/* Header */}
       <div className="bg-white border-b relative z-0" style={{ pointerEvents: 'auto' }}>
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="mr-4 hover:bg-gray-100 p-2 rounded-full transition-colors relative z-10"
             style={{ pointerEvents: 'auto' }}
           >
@@ -206,143 +222,143 @@ export default function AccountPage() {
             {/* Form Card */}
             <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Avatar Upload */}
-            <div className="flex flex-col items-center mb-6">
-              <div className="relative">
-                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-green-500 bg-gray-100 flex items-center justify-center">
-                  {avatarPreview ? (
-                    <img
-                      src={avatarPreview}
-                      alt="Avatar"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <UserIcon className="w-16 h-16 text-gray-400" />
-                  )}
+                {/* Avatar Upload */}
+                <div className="flex flex-col items-center mb-6">
+                  <div className="relative">
+                    <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-green-500 bg-gray-100 flex items-center justify-center">
+                      {avatarPreview ? (
+                        <img
+                          src={avatarPreview}
+                          alt="Avatar"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <UserIcon className="w-16 h-16 text-gray-400" />
+                      )}
+                    </div>
+                    <label
+                      htmlFor="avatar-upload"
+                      className="absolute bottom-0 right-0 w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-colors"
+                      title="Đổi ảnh đại diện"
+                    >
+                      <Camera className="w-5 h-5 text-white" />
+                      <input
+                        id="avatar-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Nhấn vào biểu tượng camera để đổi ảnh đại diện
+                  </p>
                 </div>
-                <label
-                  htmlFor="avatar-upload"
-                  className="absolute bottom-0 right-0 w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-colors"
-                  title="Đổi ảnh đại diện"
+
+                {/* Gender Selection */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Giới tính
+                  </label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="male"
+                        checked={formData.gender === "male"}
+                        onChange={() => handleGenderChange("male")}
+                        className="w-4 h-4 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-gray-700">Anh</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="female"
+                        checked={formData.gender === "female"}
+                        onChange={() => handleGenderChange("female")}
+                        className="w-4 h-4 text-green-600 focus:ring-green-500"
+                      />
+                      <span className="text-gray-700">Chị</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Full Name */}
+                <div className="space-y-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                    Họ và tên *
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Nhập họ và tên"
+                    required
+                    className="w-full h-12 px-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
+                  />
+                </div>
+
+                {/* Phone Number */}
+                <div className="space-y-2">
+                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+                    Số điện thoại
+                  </label>
+                  <input
+                    id="phoneNumber"
+                    type="tel"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    placeholder="Nhập số điện thoại"
+                    className="w-full h-12 px-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="space-y-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    Email *
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Nhập email"
+                    required
+                    className="w-full h-12 px-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
+                  />
+                </div>
+
+                {/* Error Message */}
+                {error && (
+                  <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg" role="alert">
+                    <p className="text-sm text-red-700 font-medium">{error}</p>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="w-full h-12 text-base bg-gradient-to-r from-[#007E42] to-[#00A854] hover:from-[#006B38] hover:to-[#008F48] text-white font-semibold py-2 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 hover:-translate-y-0.5 transform"
                 >
-                  <Camera className="w-5 h-5 text-white" />
-                  <input
-                    id="avatar-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-              <p className="text-sm text-gray-500 mt-2">
-                Nhấn vào biểu tượng camera để đổi ảnh đại diện
-              </p>
-            </div>
-
-            {/* Gender Selection */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Giới tính
-              </label>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="male"
-                    checked={formData.gender === "male"}
-                    onChange={() => handleGenderChange("male")}
-                    className="w-4 h-4 text-green-600 focus:ring-green-500"
-                  />
-                  <span className="text-gray-700">Anh</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="female"
-                    checked={formData.gender === "female"}
-                    onChange={() => handleGenderChange("female")}
-                    className="w-4 h-4 text-green-600 focus:ring-green-500"
-                  />
-                  <span className="text-gray-700">Chị</span>
-                </label>
-              </div>
-            </div>
-
-            {/* Full Name */}
-            <div className="space-y-2">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Họ và tên *
-              </label>
-              <input
-                id="name"
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="Nhập họ và tên"
-                required
-                className="w-full h-12 px-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
-              />
-            </div>
-
-            {/* Phone Number */}
-            <div className="space-y-2">
-              <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
-                Số điện thoại
-              </label>
-              <input
-                id="phoneNumber"
-                type="tel"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleInputChange}
-                placeholder="Nhập số điện thoại"
-                className="w-full h-12 px-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
-              />
-            </div>
-
-            {/* Email */}
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email *
-              </label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Nhập email"
-                required
-                className="w-full h-12 px-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
-              />
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg" role="alert">
-                <p className="text-sm text-red-700 font-medium">{error}</p>
-              </div>
-            )}
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={saving}
-              className="w-full h-12 text-base bg-gradient-to-r from-[#007E42] to-[#00A854] hover:from-[#006B38] hover:to-[#008F48] text-white font-semibold py-2 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 hover:-translate-y-0.5 transform"
-            >
-              {saving ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Đang lưu...
-                </span>
-              ) : (
-                "Lưu chỉnh sửa"
-              )}
-            </button>
+                  {saving ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Đang lưu...
+                    </span>
+                  ) : (
+                    "Lưu chỉnh sửa"
+                  )}
+                </button>
               </form>
             </div>
           </div>
